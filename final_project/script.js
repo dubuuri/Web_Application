@@ -23,3 +23,10 @@ function updateDate() {
 
 // 페이지가 로드되면 날짜 업데이트 함수 실행
 window.onload = updateDate;
+
+
+// 사이드바 토글 기능 추가
+document.getElementById('menu-icon').addEventListener('click', function () {
+   const sidebar = document.getElementById('sidebar');
+   sidebar.classList.toggle('open');
+});
