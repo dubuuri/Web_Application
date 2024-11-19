@@ -15,6 +15,8 @@ body {
    padding: 10px;
 }
 
+
+/* Sidebar & Main */
 .outer-container {
    display: flex;
    gap: 10px;
@@ -24,6 +26,8 @@ body {
    overflow: hidden;
 }
 
+
+/* Sidebar */
 .sidebar {
    border-top: 1px solid #ddd;
    background: linear-gradient(0deg, #eff9fa 0%, #e3f2fd 100%);
@@ -80,14 +84,12 @@ body {
 }
 
 .sidebar nav a:hover {
-   /* background-color: #b2d4e7; */
    background-color: #00695c;
    color: #ffffff;
    transform: translateX(8px);
    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
    transition: all 0.3s ease-in-out;
 }
-
 
 .sidebar nav i {
    margin: 0 20px 0 10px;
@@ -118,6 +120,7 @@ body {
    padding-right: 5px;
 }
 
+/* Main Dashboard */
 .main-content {
    border-top: 1px solid #ddd;
    flex: 1;
@@ -135,10 +138,10 @@ body {
    opacity: 0;
    transform: translateY(-20px);
    animation: fadeIn 0.5s forwards;
-   /* margin: 0 auto; */
-   /* background-color: #f7f9fc; */
 }
 
+
+/* dashboard-header */
 .dashboard-header {
    display: flex;
    flex-direction: column;
@@ -166,6 +169,8 @@ body {
    color: #303030;
 }
 
+
+/* weather-message-container */
 #weather-message-container {
    text-align: center;
    margin: 15px auto;
@@ -191,6 +196,8 @@ body {
    gap: 8px;
 }
 
+
+/* weather-container */
 .weather-container {
    display: flex;
    gap: 10px;
@@ -199,6 +206,8 @@ body {
    padding: 10px;
 }
 
+
+/* left-container */
 .left-container {
    display: flex;
    flex-direction: column;
@@ -206,6 +215,8 @@ body {
    flex: 1;
 }
 
+
+/* location-box */
 .location-box {
    background-color: #f7f9fc;
    padding: 20px;
@@ -231,6 +242,8 @@ body {
    font-weight: 300;
 }
 
+
+/* sun-info */
 .sun-info {
    display: flex;
    justify-content: space-around;
@@ -256,19 +269,8 @@ body {
    font-size: 3rem;
 }
 
-/* .sunrise i {
-   color: #ffb347;
-   font-size: 3rem;
-   margin-right: 5spx;
-}
 
-.sunset i {
-   color: #ffeb7a;
-   font-size: 3rem;
-   margin-right: 5px;
-} */
-
-/* Container styling for air quality summary */
+/* air-quality-summary */
 .air-quality-summary {
    background-color: #f7f9fc;
    padding: 20px;
@@ -281,7 +283,6 @@ body {
    width: 300px;
 }
 
-/* Dust info items aligned side by side */
 .dust-info {
    display: flex;
    justify-content: space-around;
@@ -329,6 +330,7 @@ body {
    background-color: #e0e0e0;
 }
 
+
 /* Colors of dust */
 .good {
    color: #31A1FF;
@@ -354,6 +356,8 @@ body {
    color: #D5534D;
 }
 
+
+/* weather-details-box */
 .weather-details-box {
    flex: 2;
    background-color: #f7f9fc;
@@ -366,10 +370,11 @@ body {
    gap: 10px;
 }
 
+
+/* temp-icon */
 .temp-icon {
    display: flex;
    align-items: center;
-   /* gap: 5px; */
 }
 
 .temp-icon h2 {
@@ -390,6 +395,8 @@ body {
    font-weight: 300;
 }
 
+
+/* detailed-info */
 .detailed-info {
    display: flex;
    flex-direction: column;
@@ -412,13 +419,6 @@ body {
    text-align: left;
 }
 
-.air-quality-box .detailed-info .info-item .info-label {
-   width: 120px;
-   font-weight: lighter;
-   color: #2a2a2a;
-   text-align: left;
-}
-
 .info-value {
    font-weight: 500;
    font-size: 1rem;
@@ -427,6 +427,8 @@ body {
    text-align: left;
 }
 
+
+/* air-quality-box */
 .air-quality-box {
    background-color: #f7f9fc;
    padding: 20px;
@@ -446,6 +448,15 @@ body {
    padding: 5px 0 18px 10px;
 }
 
+.air-quality-box .detailed-info .info-item .info-label {
+   width: 120px;
+   font-weight: lighter;
+   color: #2a2a2a;
+   text-align: left;
+}
+
+
+/* footer */
 .footer {
    background-color: #f9f9f9;
    text-align: center;
@@ -470,7 +481,36 @@ body {
 }
 
 
-/* 그래프 컨테이너 스타일 */
+/* data.html */
+
+/* data-buttons */
+.data-buttons {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 10px;
+   justify-content: center;
+   margin: 10px 0 20px 0;
+}
+
+.data-buttons button {
+   padding: 10px 15px;
+   margin: 5px;
+   border: none;
+   background-color: #d4eaf7;
+   color: #00668c;
+   border-radius: 8px;
+   cursor: pointer;
+   transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.data-buttons button:hover {
+   background-color: #00695c;
+   color: #fffefb;
+   transform: translateY(-3px);
+}
+
+
+/* chart-container */
 .chart-container {
    width: 100%;
    height: 500px;
@@ -507,6 +547,11 @@ body {
    margin: 0 auto;
 }
 
+canvas {
+   max-width: 100%;
+   height: 400px;
+}
+
 @keyframes fadeIn {
    to {
       opacity: 1;
@@ -514,42 +559,10 @@ body {
    }
 }
 
-canvas {
-   max-width: 100%;
-   height: 400px;
-}
-
-
-/* data.html */
-.data-buttons {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 10px;
-   justify-content: center;
-   margin: 10px 0 20px 0;
-}
-
-.data-buttons button {
-   padding: 10px 15px;
-   margin: 5px;
-   border: none;
-   background-color: #d4eaf7;
-   color: #00668c;
-   border-radius: 8px;
-   cursor: pointer;
-   transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.data-buttons button:hover {
-   background-color: #00695c;
-   color: #fffefb;
-   transform: translateY(-3px);
-}
-
 
 /* about.html */
 
-/* 데이터 설명 통합 카드 스타일 */
+/* data-description-card */
 .data-description-card {
    background-color: #f7f9fc;
    padding: 20px 30px 20px 30px;
@@ -609,7 +622,8 @@ canvas {
    flex: 1;
 }
 
-/* 사용자 정보 카드 스타일 */
+
+/* user-info-card */
 .user-info-card {
    background-color: #f7f9fc;
    padding: 20px 20px 10px 20px;
@@ -684,7 +698,8 @@ canvas {
 }
 
 
-/* 반응형 스타일 */
+
+/* responsiveness */
 @media (max-width: 768px) {
    .outer-container {
       flex-direction: column;
@@ -696,10 +711,8 @@ canvas {
       width: 100%;
       height: auto;
       border-right: none;
-      /* border-bottom: 1px solid #ddd; */
       position: relative;
       z-index: 1;
-      /* overflow-y: auto; */
    }
 
    .sidebar-header i.hamburger {

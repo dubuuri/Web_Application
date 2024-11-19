@@ -8,14 +8,15 @@
    <link rel="stylesheet" href="css/style.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
-   <!-- 전체 컨테이너 -->
+   <!-- Sidebar & Main -->
    <div class="outer-container">
-      <!-- 사이드바 -->
+
+      <!-- Sidebar -->
       <div class="sidebar">
+
          <div class="sidebar-header">
             <h2>Hello, Yuri</h2>
             <i class="fa-solid fa-bars fa-lg hamburger"></i>
@@ -23,12 +24,14 @@
 
          <hr>
 
+         <!-- Navigation Bar -->
          <nav>
             <a href="index.html"><i class="fa-solid fa-home"></i> Home</a>
             <a href="data.html"><i class="fa-solid fa-chart-line"></i> Data</a>
             <a href="about.html"><i class="fa-solid fa-info-circle"></i> About</a>
          </nav>
 
+         <!-- Date & Time -->
          <div class="date-time-container">
             <div class="date-time-item">
                <i class="fa-solid fa-calendar-day"></i>
@@ -41,18 +44,17 @@
          </div>
       </div>
 
-      <!-- 메인 콘텐츠 -->
+      <!-- Main Dashboard -->
       <div class="main-content">
+         
          <header class="dashboard-header">
             <h1>Air Quality Data: <span>Select a data type to visualize</span></h1>
          </header>
 
-         <!-- 버튼 네비게이션 -->
+         <!-- Buttons & Canvas -->
          <section class="data-section">
-            <!-- Chart.js 라이브러리 추가 -->
 
-
-            <!-- 버튼과 그래프 캔버스 추가 -->
+            <!-- Buttons -->
             <div class="data-buttons">
                <button onclick="displayHourlyChart('temperature')">🌡️ Temperature</button>
                <button onclick="displayHourlyChart('humidity')">💧 Humidity</button>
@@ -62,6 +64,7 @@
                <button onclick="showDoughnutChart()">🍩 Air Quality (Doughnut Chart)</button>
             </div>
 
+            <!-- Canvas -->
             <div class="chart-container">
                <canvas id="hourlyChartCanvas"></canvas>
                <canvas id="particleChartCanvas" style="display: none;"></canvas>
@@ -69,43 +72,23 @@
                <canvas id="barChartCanvas" style="display: none;"></canvas>
                <canvas id="doughnutChartCanvas" style="display: none;"></canvas>
             </div>
-
-
-            <!-- <nav class="data-buttons">
-               <button onclick="showChart('pm25')">PM2.5</button>
-               <button onclick="showChart('pm10')">PM10</button>
-               <button onclick="showChart('nox')">NOx</button>
-               <button onclick="showChart('nh3')">NH3</button>
-               <button onclick="showChart('co2')">CO2</button>
-               <button onclick="showChart('so2')">SO2</button>
-               <button onclick="showChart('voc')">VOC</button>
-            </nav>
-
-            <div class="chart-container">
-               <canvas id="chartCanvas"></canvas>
-            </div> -->
          </section>
-
       </div>
    </div>
 
+   <!-- Footer -->
    <footer class="footer">
       <p>&copy; 2024 Air Quality Monitoring System | Developed by Yuri Ahn</p>
       <p>Data powered by<a href="https://openweathermap.org/" target="_blank"
             rel="noopener noreferrer">OpenWeatherMap</a></p>
    </footer>
 
+   <!-- Js -->
    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-
+   <script
+      src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
    <script src="js/chart.js"></script>
    <script src="js/script.js"></script>
-
-   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   <script src="js/chart.js"></script>
-   <script src="js/script.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
 </body>
 
 </html>

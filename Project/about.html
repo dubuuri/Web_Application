@@ -11,10 +11,12 @@
 </head>
 
 <body>
-   <!-- 전체 컨테이너 -->
+   <!-- Sidebar & Main -->
    <div class="outer-container">
-      <!-- 사이드바 -->
+
+      <!-- Sidebar -->
       <div class="sidebar">
+
          <div class="sidebar-header">
             <h2>Hello, Yuri</h2>
             <i class="fa-solid fa-bars fa-lg hamburger"></i>
@@ -22,11 +24,14 @@
 
          <hr>
 
+         <!-- Navigation Bar -->
          <nav>
             <a href="index.html"><i class="fa-solid fa-home"></i> Home</a>
             <a href="data.html"><i class="fa-solid fa-chart-line"></i> Data</a>
             <a href="about.html"><i class="fa-solid fa-info-circle"></i> About</a>
          </nav>
+
+         <!-- Date & Time -->
          <div class="date-time-container">
             <div class="date-time-item">
                <i class="fa-solid fa-calendar-day"></i>
@@ -39,8 +44,9 @@
          </div>
       </div>
 
-      <!-- 메인 콘텐츠 -->
+      <!-- Main Dashboard -->
       <div class="main-content">
+
          <header class="dashboard-header">
             <h1>About the Air Quality Dashboard</h1>
             <p>This dashboard helps you check air quality and weather in real-time 🌦️.
@@ -53,6 +59,7 @@
             </p>
          </header>
 
+         <!-- Center Box -->
          <section class="data-description-card">
             <h2>Data Descriptions</h2>
             <div class="data-row">
@@ -135,6 +142,7 @@
             </div>
          </section>
 
+         <!-- Below Box -->
          <section class="user-info-card">
             <h2>Developer Information</h2>
             <div class="info-item">
@@ -155,17 +163,18 @@
                <p><span>Location:</span> Busan, South Korea</p>
             </div>
          </section>
-
-
+ 
       </div>
    </div>
 
+   <!-- Footer -->
    <footer class="footer">
       <p>&copy; 2024 Air Quality Monitoring System | Developed by Yuri Ahn</p>
       <p>Data powered by <a href="https://openweathermap.org/" target="_blank"
             rel="noopener noreferrer">OpenWeatherMap</a></p>
    </footer>
 
+   <!-- Js -->
    <script src="js/script.js"></script>
 </body>
 
