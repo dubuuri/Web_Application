@@ -17,21 +17,6 @@ function clearChart() {
 }
 
 
-// // 대기질 데이터 가져오기
-// async function fetchAirQualityData() {
-//     try {
-//         const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
-//         const data = await response.json();
-//         if (data.list && data.list.length > 0) {
-//             return data.list[0].components;
-//         }
-//     } catch (error) {
-//         console.error('대기질 데이터 가져오기 실패:', error);
-//     }
-//     return null;
-// }
-
-
 // Display hourly temperature & humidity chart
 function displayHourlyChart(type) {
 
