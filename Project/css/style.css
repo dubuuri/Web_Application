@@ -19,9 +19,9 @@ body {
    display: flex;
    gap: 10px;
    width: 100%;
-   /* max-width: 1400px; */
    height: calc(100% - 60px);
-   /* margin-bottom: 10px; */
+   flex-direction: row;
+   overflow: hidden;
 }
 
 .sidebar {
@@ -73,6 +73,10 @@ body {
    font-weight: 400;
    color: #00668c;
    transition: background-color 0.3s ease;
+}
+
+.sidebar nav a:last-child {
+   margin-bottom: 30px;
 }
 
 .sidebar nav a:hover {
@@ -677,4 +681,112 @@ canvas {
 .info-item a:hover::after {
    transform: scaleX(1);
    transform-origin: bottom left;
+}
+
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+   .outer-container {
+      flex-direction: column;
+      height: auto;
+      overflow-y: auto;
+   }
+
+   .sidebar {
+      width: 100%;
+      height: auto;
+      border-right: none;
+      /* border-bottom: 1px solid #ddd; */
+      position: relative;
+      z-index: 1;
+      /* overflow-y: auto; */
+   }
+
+   .sidebar-header i.hamburger {
+      cursor: pointer;
+      display: none;
+   }
+
+   .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      width: 100%;
+      flex: 1;
+      height: auto;
+      overflow-y: visible;
+   }
+
+   .location-box,
+   .weather-container,
+   .air-quality-box {
+      align-items: center;
+      text-align: center;
+   }
+
+   .dust-info {
+      justify-content: center;
+   }
+
+   .chart-container {
+      height: auto;
+      padding: 10px;
+   }
+
+   .data-buttons {
+      flex-direction: column;
+      gap: 10px;
+   }
+
+   .data-buttons button {
+      width: 100%;
+      margin: 5px 0;
+   }
+
+   .weather-container,
+   .air-quality-box {
+      flex-direction: column;
+      gap: 20px;
+   }
+
+   .detailed-info {
+      flex-direction: column;
+      gap: 15px;
+   }
+
+   .user-info-card {
+      background-color: #f7f9fc;
+      padding: 20px 20px 10px 10px;
+      border-radius: 10px;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+   }
+
+   .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+   }
+
+   .info-item i {
+      margin-right: 10px;
+      flex-shrink: 0;
+      width: 25px;
+      text-align: center;
+   }
+
+   .info-item p {
+      display: flex;
+      align-items: center;
+      margin: 0;
+   }
+
+   .info-item span {
+      min-width: 80px;
+   }
 }

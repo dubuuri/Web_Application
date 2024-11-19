@@ -302,31 +302,38 @@ async function showParticleChart() {
 
 
 async function showGasChart() {
-    clearChart();
+    clearChart(); // 기존 차트 삭제
     const pollutants = await fetchAirQualityData();
     if (!pollutants) return;
 
     const ctx = document.getElementById('gasChartCanvas').getContext('2d');
     document.getElementById('gasChartCanvas').style.display = 'block';
 
-    const labels = ['NO2', 'O3', 'SO2', 'NH3'];
+    // NO 데이터 추가
+    const labels = ['NO', 'NO2', 'O3', 'SO2', 'NH3'];
     const dataValues = [
+        pollutants.no || 0,
         pollutants.no2 || 0,
         pollutants.o3 || 0,
         pollutants.so2 || 0,
         pollutants.nh3 || 0
     ];
 
-    // 그라디언트 색상: 아래쪽이 진하고 위쪽이 연한 색
+    // 그라디언트 색상 설정
     const colors = labels.map((label, index) => {
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        const baseColor = ['#36A2EB', '#9966FF', '#FFCE56', '#FF9F40'][index];
+        const baseColor = ['#FF6384', '#36A2EB', '#9966FF', '#FFCE56', '#FF9F40'][index];
         gradient.addColorStop(0, `${baseColor}33`);
         gradient.addColorStop(1, `${baseColor}FF`);
         return gradient;
     });
 
-    new Chart(ctx, {
+    // 기존 차트 삭제 (중복 방지)
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
@@ -334,7 +341,8 @@ async function showGasChart() {
                 data: dataValues,
                 backgroundColor: colors,
                 borderRadius: 12,
-                barThickness: 70
+                // 반응형으로 막대 두께 조절
+                barThickness: window.innerWidth < 768 ? 40 : 70 // 모바일에서는 40, 데스크탑에서는 70
             }]
         },
         options: {
@@ -391,6 +399,7 @@ async function showGasChart() {
 }
 
 
+
 // 막대 차트 표시 함수
 async function showBarChart() {
     clearChart();
@@ -412,12 +421,12 @@ async function showBarChart() {
     const colors = labels.map((label, index) => {
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         const baseColor = ['#FF6384', '#36A2EB', '#FFCE56', '#9966FF', '#66BB6A', '#FF9F40', '#FF6B81', '#42A5F5'][index];
-        gradient.addColorStop(0, `${baseColor}88`); // 연한 색
-        gradient.addColorStop(1, baseColor); // 진한 색
+        gradient.addColorStop(0, `${baseColor}88`);
+        gradient.addColorStop(1, baseColor);
         return gradient;
     });
 
-    // 차트 생성
+    // 반응형 차트 생성
     chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -428,16 +437,15 @@ async function showBarChart() {
                 backgroundColor: colors,
                 borderColor: colors,
                 borderRadius: 10,
-                barThickness: 50
+                // 반응형 막대 두께 설정
+                barThickness: window.innerWidth < 768 ? 30 : 50 // 모바일에서는 30, 데스크탑에서는 50
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    display: false
-                },
+                legend: { display: false },
                 title: {
                     display: true,
                     text: 'Air Pollutant Concentrations',
@@ -460,7 +468,6 @@ async function showBarChart() {
                     callbacks: {
                         label: function (context) {
                             const value = context.raw;
-                            // 값이 0일 때도 표시되도록 수정
                             return `${context.label}: ${value ? value.toFixed(2) : '0'} µg/m³`;
                         }
                     },
@@ -493,9 +500,7 @@ async function showBarChart() {
                     ticks: {
                         color: '#333'
                     },
-                    grid: {
-                        display: false
-                    }
+                    grid: { display: false }
                 }
             },
             animation: {
@@ -505,6 +510,7 @@ async function showBarChart() {
         }
     });
 }
+
 
 
 // 도넛 차트 표시 함수
@@ -528,8 +534,6 @@ async function showDoughnutChart() {
         pollutants.so2 || 0, pollutants.nh3 || 0, pollutants.pm2_5 || 0, pollutants.pm10 || 0
     ];
 
-    const total = dataValues.reduce((acc, value) => acc + value, 0);
-
     const sortedData = dataValues.map((value, index) => ({
         label: labels[index],
         value: value,
@@ -539,6 +543,9 @@ async function showDoughnutChart() {
     const sortedLabels = sortedData.map(item => item.label);
     const sortedValues = sortedData.map(item => item.value);
     const sortedColors = sortedData.map(item => item.color);
+
+    // 반응형 설정 추가
+    const isMobile = window.innerWidth < 768;
 
     chartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -554,14 +561,9 @@ async function showDoughnutChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '50%',
+            cutout: isMobile ? '40%' : '50%',
             layout: {
-                padding: {
-                    left: 100,
-                    right: 100,
-                    top: 20,
-                    bottom: 20
-                }
+                padding: isMobile ? 10 : 50
             },
             plugins: {
                 title: {
@@ -569,20 +571,20 @@ async function showDoughnutChart() {
                     text: 'Air Quality Pollutant Composition',
                     color: '#333',
                     font: {
-                        size: 20,
+                        size: isMobile ? 16 : 20,
                         weight: '500'
                     },
                     padding: {
-                        bottom: 30
+                        bottom: 20
                     }
                 },
                 legend: {
                     display: true,
-                    position: 'right',
+                    position: isMobile ? 'bottom' : 'right',
                     labels: {
                         color: '#333',
                         font: {
-                            size: 13,
+                            size: isMobile ? 10 : 13,
                             family: 'Poppins'
                         },
                         padding: 10
@@ -598,7 +600,7 @@ async function showDoughnutChart() {
                 datalabels: {
                     color: '#FFFFFF',
                     font: {
-                        size: 12,
+                        size: isMobile ? 10 : 12,
                         family: 'Poppins'
                     },
                     align: 'center',
@@ -614,12 +616,28 @@ async function showDoughnutChart() {
         },
         plugins: [ChartDataLabels]
     });
-
 }
-
 
 
 // 페이지가 로드되면 기본적으로 온도 그래프를 표시
 document.addEventListener('DOMContentLoaded', () => {
     displayHourlyChart('temperature');
 });
+
+
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            callbacks: {
+                label: (context) => `${context.label}: ${context.raw.toFixed(2)} µg/m³`
+            }
+        }
+    },
+    scales: {
+        x: { grid: { display: false }, ticks: { color: '#333' } },
+        y: { beginAtZero: true, grid: { color: '#f0f0f0' }, ticks: { color: '#333' } }
+    }
+};

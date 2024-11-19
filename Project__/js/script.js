@@ -244,21 +244,3 @@ document.addEventListener('DOMContentLoaded', () => {
    updateDustStatus();
    setInterval(updateDateTime, 1000);
 });
-
-
-// 사이드바 토글 기능
-const hamburger = document.querySelector('.hamburger');
-const sidebar = document.querySelector('.sidebar');
-
-if (hamburger && sidebar) {
-   hamburger.addEventListener('click', () => {
-      sidebar.classList.toggle('show');
-   });
-}
-
-// 화면 크기 변화 감지 후 사이드바 숨김/표시 조정
-window.addEventListener('resize', () => {
-   if (window.innerWidth > 768) {
-      sidebar.classList.remove('show');
-   }
-});
