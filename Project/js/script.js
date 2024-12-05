@@ -217,7 +217,6 @@ function displayAirQualityData(components) {
 
 // Update dust status
 function updateDustStatus(components) {
-
    // Stop if the element doesn't exist
    if (!components) return;
 

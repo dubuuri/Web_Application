@@ -33,14 +33,17 @@ function displayHourlyChart(type) {
     // Fetch hourly weather data
     fetchHourlyWeatherData().then(weatherData => {
         // Generate labels for each hour using the timestamp from the data
+
         const labels = weatherData.map(item => {
             const date = new Date(item.dt * 1000); // Convert UNIX timestamp to date
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
             const labelDate = date.getHours() === 0 ? `${date.getMonth() + 1}/${date.getDate()} ` : '';
-            return `${labelDate}${hours}:${minutes}`; // Format as "MM/DD HH:mm" or "HH:mm"
+            return `${month}/${day} ${hours}:${minutes}`; // Format as "MM/DD HH:mm" or "HH:mm"
         });
-
+        
         let dataset, chartLabel, gradient;
         const ctx = hourlyCanvas.getContext('2d'); // Get the drawing context for the chart
 
@@ -179,6 +182,7 @@ function displayHourlyChart(type) {
 
 // Display bar chart for air particle concentration
 async function showParticleChart() {
+
     clearChart(); // Clear any existing chart before rendering a new one
 
     // Fetch air quality data

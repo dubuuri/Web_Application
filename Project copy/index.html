@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Air Quality Dashboard</title>
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+   <!-- Sidebar & Main -->
+   <div class="outer-container">
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+
+         <div class="sidebar-header">
+            <h2>Hello, Yuri</h2>
+            <i class="fa-solid fa-bars fa-lg hamburger"></i>
+         </div>
+
+         <hr>
+
+         <!-- Navigation Bar -->
+         <nav>
+            <a href="index.html"><i class="fa-solid fa-home"></i> Home</a>
+            <a href="data.html"><i class="fa-solid fa-chart-line"></i> Data</a>
+            <a href="about.html"><i class="fa-solid fa-info-circle"></i> About</a>
+         </nav>
+
+         <!-- Date & Time -->
+         <div class="date-time-container">
+            <div class="date-time-item">
+               <i class="fa-solid fa-calendar-day"></i>
+               <span id="current-date"></span>
+            </div>
+            <div class="date-time-item">
+               <i class="fa-solid fa-clock"></i>
+               <span id="current-time"></span>
+            </div>
+         </div>
+      </div>
+
+      <!-- Main Dashboard -->
+      <div class="main-content">
+
+         <header class="dashboard-header">
+            <h1>Welcome to the Air Quality Dashboard: <span>Monitor real-time air quality data</span></h1>
+         </header>
+
+         <div id="weather-message-container">
+            <p id="weather-message">Fetching the latest weather data...</p>
+         </div>
+
+         <!-- Weather Boxes -->
+         <div class="weather-container">
+
+            <!-- Left 3 Boxes -->
+            <div class="left-container">
+
+               <div class="location-box">
+                  <h2 id="city">Fetching...</h2>
+                  <span id="date">--.--</span>
+                  <span id="weekday">Loading...</span>
+               </div>
+
+               <div class="sun-info">
+                  <div class="sunrise">
+                     <span class="emoji">🌅</span>
+                     <span id="sunrise">6:59 AM</span>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="sunset">
+                     <span class="emoji">🌇</span>
+                     <span id="sunset">5:17 PM</span>
+                  </div>
+               </div>
+
+               <div class="air-quality-summary">
+                  <div class="dust-info">
+                     <div class="dust-item">
+                        <div class="dust-label">Fine Dust</div>
+                        <div class="dust-value">
+                           <span class="dust-number good" id="pm10-value">--</span>
+                           <span class="dust-status good" id="pm10-status">--</span>
+                        </div>
+                     </div>
+                     <div class="divider2"></div>
+                     <div class="dust-item">
+                        <div class="dust-label">Ultrafine Dust</div>
+                        <div class="dust-value">
+                           <span class="dust-number good" id="pm25-value">--</span>
+                           <span class="dust-status good" id="pm25-status">--</span>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Weather Detail Box (Center) -->
+            <div class="weather-details-box">
+
+               <div class="temp-icon">
+                  <h2 id="temperature">20.8°C</h2>
+                  <img id="weather-icon" alt="Weather Icon">
+                  <p id="weather-description">broken clouds</p>
+               </div>
+
+               <div class="detailed-info">
+                  <div class="info-item">
+                     <span class="info-label">Feels like</span>
+                     <span class="info-value" id="feels-like">16.4 °C</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Precipitation</span>
+                     <span class="info-value" id="precipitation">0 mm</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Wind Speed</span>
+                     <span class="info-value" id="wind-speed">3.76 m/s</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Wind Direction</span>
+                     <span class="info-value" id="wind-direction">349 °</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Humidity</span>
+                     <span class="info-value" id="humidity">41 %</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Cloudiness</span>
+                     <span class="info-value" id="clouds">99 %</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">Pressure</span>
+                     <span class="info-value" id="pressure">1017 hPa</span>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Air Quality Box (Right) -->
+            <div class="air-quality-box">
+               <h2>Air Quality Data</h2>
+               <div class="detailed-info">
+                  <div class="info-item">
+                     <span class="info-label">PM2.5</span>
+                     <span class="info-value" id="pm25">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">PM10</span>
+                     <span class="info-value" id="pm10">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">CO</span>
+                     <span class="info-value" id="co">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">NO</span>
+                     <span class="info-value" id="no">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">NO₂</span>
+                     <span class="info-value" id="no2">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">O₃</span>
+                     <span class="info-value" id="o3">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">SO₂</span>
+                     <span class="info-value" id="so2">--</span>
+                  </div>
+                  <div class="info-item">
+                     <span class="info-label">NH₃</span>
+                     <span class="info-value" id="nh3">--</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Footer -->
+   <footer class="footer">
+      <p>&copy; 2024 Air Quality Monitoring System | Developed by Yuri Ahn</p>
+      <p>Data powered by<a href="https://openweathermap.org/" target="_blank"
+            rel="noopener noreferrer">OpenWeatherMap</a></p>
+   </footer>
+
+   <!-- Js -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="js/script.js"></script>
+</body>
+
+</html>
