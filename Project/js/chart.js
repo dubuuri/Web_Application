@@ -1,19 +1,16 @@
 // Store the current chart instance
 let chartInstance = null;
 
-// Clear & hide charts
+// Clear the chart in canvas
 function clearChart() {
-
     if (chartInstance) {
         chartInstance.destroy();
         chartInstance = null;
     }
-    // Hide all chart by setting them to 'none'
-    document.getElementById('particleChartCanvas').style.display = 'none';
-    document.getElementById('gasChartCanvas').style.display = 'none';
-    document.getElementById('hourlyChartCanvas').style.display = 'none';
-    document.getElementById('barChartCanvas').style.display = 'none';
-    document.getElementById('doughnutChartCanvas').style.display = 'none';
+
+    document.querySelectorAll('canvas').forEach(canvas => {
+        canvas.style.display = 'none'; // Hide the canvas
+    });
 }
 
 
@@ -26,8 +23,6 @@ function displayHourlyChart(type) {
     // Show canvas for hourly chart
     const hourlyCanvas = document.getElementById('hourlyChartCanvas');
     hourlyCanvas.style.display = 'block';
-
-    // Set default font for all chart
     Chart.defaults.font.family = 'Poppins, sans-serif';
 
     // Fetch hourly weather data
@@ -43,7 +38,7 @@ function displayHourlyChart(type) {
             const labelDate = date.getHours() === 0 ? `${date.getMonth() + 1}/${date.getDate()} ` : '';
             return `${month}/${day} ${hours}:${minutes}`; // Format as "MM/DD HH:mm" or "HH:mm"
         });
-        
+
         let dataset, chartLabel, gradient;
         const ctx = hourlyCanvas.getContext('2d'); // Get the drawing context for the chart
 
@@ -521,72 +516,68 @@ async function showBarChart() {
 }
 
 
-// Display doughnut chart for air quality pollutant composition
+// Save the current Dount Chart Data
+let currentDoughnutData = [];
+
 async function showDoughnutChart() {
     clearChart(); // Clear any existing chart
 
-    // Get the canvas context and make the doughnut chart canvas visible
     const ctx = document.getElementById('doughnutChartCanvas').getContext('2d');
     document.getElementById('doughnutChartCanvas').style.display = 'block';
 
-    // Fetch air quality data
     const pollutants = await fetchAirQualityData();
     if (!pollutants) return; // Exit if no data is available
 
-    // Define colors for each pollutant
     const colors = [
         '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF',
         '#9A66FF', '#FF922B', '#FF7B9C', '#36CFC9'
     ];
 
-    // Define pollutant labels and their corresponding values
     const labels = ['CO', 'NO', 'NO2', 'O3', 'SO2', 'NH3', 'PM2.5', 'PM10'];
     const dataValues = [
         pollutants.co || 0, pollutants.no || 0, pollutants.no2 || 0, pollutants.o3 || 0,
         pollutants.so2 || 0, pollutants.nh3 || 0, pollutants.pm2_5 || 0, pollutants.pm10 || 0
     ];
 
-    // Sort pollutants by value in descending order
-    const sortedData = dataValues.map((value, index) => ({
-        label: labels[index], // Pollutant label
-        value: value, // Pollutant value
-        color: colors[index] // Pollutant color
-    })).sort((a, b) => b.value - a.value);
+    // Sort data
+    const sortedData = dataValues
+        .map((value, index) => ({
+            label: labels[index],
+            value: value,
+            color: colors[index]
+        }))
+        .sort((a, b) => b.value - a.value);
 
-    // Extract sorted labels, values, and colors
     const sortedLabels = sortedData.map(item => item.label);
     const sortedValues = sortedData.map(item => item.value);
     const sortedColors = sortedData.map(item => item.color);
 
-    // Determine if the device is mobile for responsive layout
-    const isMobile = window.innerWidth < 768;
-
-    // Create a responsive doughnut chart
+    // Create Doughnut Chart
     chartInstance = new Chart(ctx, {
-        type: 'doughnut', // Doughnut chart type
+        type: 'doughnut',
         data: {
-            labels: sortedLabels, // Sorted labels for the chart
+            labels: sortedLabels,
             datasets: [{
-                data: sortedValues, // Sorted pollutant values
-                backgroundColor: sortedColors, // Corresponding colors
-                borderWidth: 1, // Border width for the chart
-                borderColor: '#FFFFFF' // White border color for the chart
+                data: sortedValues,
+                backgroundColor: sortedColors,
+                borderWidth: 1,
+                borderColor: '#FFFFFF',
             }]
         },
         options: {
-            responsive: true, // Make the chart responsive
-            maintainAspectRatio: false, // Allow custom aspect ratio
-            cutout: isMobile ? '40%' : '50%', // Adjust cutout size for mobile vs desktop
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '50%',
             layout: {
-                padding: isMobile ? 10 : 20 // Adjust padding based on device
+                padding: 20
             },
             plugins: {
                 title: {
-                    display: true, // Display chart title
-                    text: 'Air Quality Pollutant Composition', // Chart title text
-                    color: '#333', // Title color
+                    display: true,
+                    text: 'Air Quality Pollutant Composition',
+                    color: '#333',
                     font: {
-                        size: isMobile ? 16 : 20, // Font size for mobile vs desktop
+                        size: 20,
                         weight: '500'
                     },
                     padding: {
@@ -594,45 +585,106 @@ async function showDoughnutChart() {
                     }
                 },
                 legend: {
-                    display: true, // Show legend
-                    position: isMobile ? 'bottom' : 'right', // Legend position based on device
+                    display: true,
+                    position: 'right',
                     labels: {
-                        color: '#333', // Label text color
+                        color: '#333',
                         font: {
-                            size: isMobile ? 10 : 13, // Font size for mobile vs desktop
+                            size: 13,
                             family: 'Poppins'
                         },
-                        padding: 10 // Padding for legend labels
+                        padding: 10,
+                        usePointStyle: true,
+                        generateLabels: function (chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, index) => ({
+                                text: `${label}: ${data.datasets[0].data[index]} µg/m³`,
+                                fillStyle: data.datasets[0].backgroundColor[index],
+                                hidden: chart.getDatasetMeta(0).data[index]?.hidden || false,
+                                index: index
+                            }));
+                        }
+                    },
+                    onClick: function (e, legendItem, legend) {
+                        const index = legendItem.index;
+                        const meta = legend.chart.getDatasetMeta(0);
+                        const dataset = legend.chart.data.datasets[0];
+
+                        // Save the original data
+                        if (!dataset.originalData) {
+                            dataset.originalData = [...dataset.data];
+                        }
+
+                        // Transit between hidden/show
+                        meta.data[index].hidden = !meta.data[index].hidden;
+
+                        if (meta.data[index].hidden) {
+                            // Set hidden data to 0
+                            dataset.data[index] = 0;
+                        } else {
+                            // reset the original data
+                            dataset.data[index] = dataset.originalData[index];
+                        }
+
+                        // Update chart
+                        legend.chart.update();
                     }
+
                 },
                 tooltip: {
                     callbacks: {
-                        // Customize tooltip label to show pollutant value with units
                         label: function (context) {
-                            return `${context.label}: ${context.raw} µg/m³`;
+                            const total = context.chart.data.datasets[0].data.reduce((acc, value, index) => {
+                                const meta = context.chart.getDatasetMeta(0);
+                                return meta.data[index].hidden ? acc : acc + value;
+                            }, 0);
+                            const percentage = ((context.raw / total) * 100).toFixed(1);
+                            return `${context.label}: ${context.raw} µg/m³ (${percentage}%)`;
                         }
                     }
                 },
                 datalabels: {
-                    color: '#FFFFFF', // Data label color
+                    color: '#FFFFFF',
                     font: {
-                        size: isMobile ? 10 : 12, // Font size for mobile vs desktop
+                        size: 12,
                         family: 'Poppins'
                     },
-                    align: 'center', // Align labels at the center of segments
-                    anchor: 'center', // Anchor labels to the center of segments
-                    clip: false, // Allow labels to overflow
-                    // Format labels to show name and value only if percentage >= 5%
+                    align: 'center',
+                    anchor: 'center',
+                    clip: false,
                     formatter: (value, context) => {
-                        const total = context.chart.data.datasets[0].data.reduce((acc, curr) => acc + curr, 0); // Calculate total value
-                        const percentage = ((value / total) * 100).toFixed(1); // Calculate percentage
-                        return percentage >= 5 ? `${context.chart.data.labels[context.dataIndex]}\n${value} µg/m³` : ''; // Show label only for significant values
+                        const meta = context.chart.getDatasetMeta(0);
+                        const total = context.chart.data.datasets[0].data.reduce((acc, curr, index) => {
+                            return meta.data[index].hidden ? acc : acc + curr;
+                        }, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return percentage >= 5 ? `${context.chart.data.labels[context.dataIndex]}\n${value} µg/m³` : '';
                     }
                 }
             }
         },
-        plugins: [ChartDataLabels] // Include data labels plugin
+        plugins: [ChartDataLabels]
     });
+}
+
+
+// Remove data and update the doughnut chart
+function removeDoughnutData(index) {
+    if (index < 0 || index >= currentDoughnutData.length) return;
+
+    // Remove the selected data point
+    currentDoughnutData.splice(index, 1);
+
+    // Calculate the updated labels and data
+    const updatedLabels = currentDoughnutData.map(item => item.label);
+    const updatedData = currentDoughnutData.map(item => item.value);
+
+    // Update the chart data
+    chartInstance.data.labels = updatedLabels;
+    chartInstance.data.datasets[0].data = updatedData;
+
+    // Refresh the chart to reflect changes
+    chartInstance.update();
 }
 
 
@@ -661,3 +713,21 @@ const chartOptions = {
         }
     }
 };
+
+
+// Rendering charts on the data page
+document.addEventListener('DOMContentLoaded', () => {
+    const storedLat = sessionStorage.getItem('lat');
+    const storedLon = sessionStorage.getItem('lon');
+
+    if (storedLat && storedLon) {
+        lat = storedLat;
+        lon = storedLon;
+        console.log(`Using saved location: lat=${lat}, lon=${lon}`);
+    } else {
+        console.log('No location found in sessionStorage. Using default location.');
+    }
+
+    // Render the temperature chart as the default
+    displayHourlyChart('temperature', lat, lon);
+});

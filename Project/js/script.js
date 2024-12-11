@@ -1,6 +1,87 @@
 const apiKey = 'ad4ee17d2754336008bc1a43919a2363';
-const lat = '35.1796'; // Busan latitude
-const lon = '129.0756'; // Busan longitude
+
+let lat = '37.5665'; // Default: Seoul
+let lon = '126.9780'; // Default: Seoul
+
+
+/// Initialize location and fetch data
+function initializeLocation() {
+   const storedLat = sessionStorage.getItem('lat');
+   const storedLon = sessionStorage.getItem('lon');
+
+   if (storedLat && storedLon) {
+      lat = storedLat;
+      lon = storedLon;
+      console.log(`Using saved location: lat=${lat}, lon=${lon}`);
+   } else {
+      console.log('No location found in sessionStorage. Using default location.');
+
+      // Store default location in sessionStorage
+      sessionStorage.setItem('lat', lat);
+      sessionStorage.setItem('lon', lon);
+   }
+
+   // Fetch weather and air quality data
+   fetchWeatherData(lat, lon);
+   fetchAirQualityData(lat, lon);
+}
+
+
+// Update the user's current location
+function updateCurrentLocation() {
+   if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+         (position) => {
+            lat = position.coords.latitude;
+            lon = position.coords.longitude;
+
+            // Save updated location in sessionStorage
+            sessionStorage.setItem('lat', lat);
+            sessionStorage.setItem('lon', lon);
+
+            console.log(`User location updated: lat=${lat}, lon=${lon}`);
+
+            // Fetch updated data
+            fetchWeatherData(lat, lon);
+            fetchAirQualityData(lat, lon);
+         },
+         (error) => {
+            console.error('Error fetching location:', error.message);
+
+            // Use default location as fallback
+            lat = '37.5665'; // Default: Seoul
+            lon = '126.9780';
+
+            // Fetch data using default location
+            fetchWeatherData(lat, lon);
+            fetchAirQualityData(lat, lon);
+         }
+      );
+   } else {
+      console.error('Geolocation is not supported by this browser.');
+
+      // Use default location as fallback
+      lat = '37.5665'; // Default: Seoul
+      lon = '126.9780';
+
+      // Fetch data using default location
+      fetchWeatherData(lat, lon);
+      fetchAirQualityData(lat, lon);
+   }
+}
+
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', () => {
+   initializeLocation();
+
+   const currentLocationBtn = document.getElementById('current-location-btn');
+   if (currentLocationBtn) {
+      currentLocationBtn.addEventListener('click', updateCurrentLocation);
+   } else {
+      console.error('Button with ID "current-location-btn" not found in DOM.');
+   }
+});
 
 
 // Update current date & time
@@ -62,6 +143,32 @@ async function fetchWeatherData() {
    }
 }
 
+// Fetch air quality data
+async function fetchAirQualityData() {
+   try {
+      // Call OpenWeather API to get weather data
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+
+      // Convert the response to JSON
+      const data = await response.json();
+
+      if (data.list && data.list.length > 0) {
+         const components = data.list[0].components; // Extract air quality components
+
+         // Display air quality data
+         displayAirQualityData(components);
+
+         // Update air quality status
+         updateDustStatus(components);
+
+         return components;
+      }
+   } catch (error) { // Catch any errors that occur while try
+      console.error('Error fetching air quality data:', error);
+   }
+   return null;
+}
+
 
 // Update weather details
 function displayWeatherData(data) {
@@ -69,6 +176,7 @@ function displayWeatherData(data) {
    const main = data.main; // Main weather details
    const wind = data.wind; // Wind details
    const sys = data.sys; // Sunrise & Sunset
+   updateBackground(weather.main);
 
    // Get elements to update
    const cityElement = document.getElementById('city');
@@ -125,6 +233,7 @@ fetchWeatherData(); // Call the function to fetch & display
 
 
 // Update message based on the weather condition
+// Update message based on the weather condition
 function updateWeatherMessage(weather) {
    const weatherMessage = document.getElementById('weather-message');
 
@@ -145,46 +254,44 @@ function updateWeatherMessage(weather) {
       case "Snow":
          weatherMessage.textContent = "Snow is falling! Be careful not to slip ❄️";
          break;
+      case "Drizzle":
+         weatherMessage.textContent = "A light drizzle is falling. Take a jacket just in case! 🌧️";
+         break;
       case "Thunderstorm":
          weatherMessage.textContent = "Thunderstorms are expected. Stay safe indoors! ⛈️";
          break;
       case "Mist":
-      case "Fog":
          weatherMessage.textContent = "It's misty outside. Drive carefully! 🌫️";
          break;
-      case "Drizzle":
-         weatherMessage.textContent = "A light drizzle is falling. Take a jacket just in case! 🌧️";
+      case "Fog":
+         weatherMessage.textContent = "Dense fog is present. Visibility might be low! 🌫️";
+         break;
+      case "Haze":
+         weatherMessage.textContent = "The atmosphere is hazy. Stay hydrated and be cautious! 🌫️";
+         break;
+      case "Smoke":
+         weatherMessage.textContent = "The air is smoky. Try to stay indoors if possible! 🚬";
+         break;
+      case "Dust":
+         weatherMessage.textContent = "Dust is in the air. Wear a mask if you go outside! 🌪️";
+         break;
+      case "Sand":
+         weatherMessage.textContent = "A sandstorm is ongoing. Protect yourself and stay safe! 🏜️";
+         break;
+      case "Ash":
+         weatherMessage.textContent = "Volcanic ash is in the air. Avoid going outside! 🌋";
+         break;
+      case "Squall":
+         weatherMessage.textContent = "Strong squalls are expected. Stay indoors and be safe! 💨";
+         break;
+      case "Tornado":
+         weatherMessage.textContent = "A tornado is nearby. Seek shelter immediately! 🌪️";
          break;
       default:
          weatherMessage.textContent = "Fetching the latest weather data...";
    }
 }
 
-// Fetch air quality data
-async function fetchAirQualityData() {
-   try {
-      // Call OpenWeather API to get weather data
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
-
-      // Convert the response to JSON
-      const data = await response.json();
-
-      if (data.list && data.list.length > 0) {
-         const components = data.list[0].components; // Extract air quality components
-
-         // Display air quality data
-         displayAirQualityData(components);
-
-         // Update air quality status
-         updateDustStatus(components);
-
-         return components;
-      }
-   } catch (error) { // Catch any errors that occur while try
-      console.error('Error fetching air quality data:', error);
-   }
-   return null;
-}
 
 
 // Display air quality data
@@ -234,37 +341,45 @@ function updateDustStatus(components) {
 
 // Update the status of dust levels
 function updateStatus(type, value) {
-
    // Get elements to update
-   const element = document.getElementById(`${type}-status`);
+   const statusElement = document.getElementById(`${type}-status`);
    const valueElement = document.getElementById(`${type}-value`);
 
-   // Stop if the element doesn't exist
-   if (!element || !valueElement) return;
+   // Stop if the elements don't exist
+   if (!statusElement || !valueElement) return;
 
    // Update value if it exists
    valueElement.textContent = value !== undefined ? value : '--';
 
-   // Set the status and class based on the value
+   // Variables for status and CSS class
+   let statusText = '';
+   let statusClass = '';
+
+   // Determine status and corresponding class based on value
    if (value <= 50) {
-      element.textContent = 'Good';
-      element.className = 'dust-status good';
+      statusText = 'Good';
+      statusClass = 'good';
    } else if (value <= 100) {
-      element.textContent = 'Moderate';
-      element.className = 'dust-status moderate';
+      statusText = 'Moderate';
+      statusClass = 'moderate';
    } else if (value <= 150) {
-      element.textContent = 'Sensitive Groups';
-      element.className = 'dust-status sensitive';
+      statusText = 'Sensitive Groups';
+      statusClass = 'sensitive';
    } else if (value <= 200) {
-      element.textContent = 'Unhealthy';
-      element.className = 'dust-status unhealthy';
+      statusText = 'Unhealthy';
+      statusClass = 'unhealthy';
    } else if (value <= 300) {
-      element.textContent = 'Very Unhealthy';
-      element.className = 'dust-status very-unhealthy';
+      statusText = 'Very Unhealthy';
+      statusClass = 'very-unhealthy';
    } else {
-      element.textContent = 'Hazardous';
-      element.className = 'dust-status hazardous';
+      statusText = 'Hazardous';
+      statusClass = 'hazardous';
    }
+
+   // Update the text content and apply the same class to both elements
+   statusElement.textContent = statusText;
+   valueElement.className = `dust-number ${statusClass}`; // Apply class to number
+   statusElement.className = `dust-status ${statusClass}`; // Apply class to status
 }
 
 
@@ -293,7 +408,57 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Display the temperature chart by default when the page loads
+// For Default in 'data.html'
 document.addEventListener('DOMContentLoaded', () => {
-   displayHourlyChart('temperature'); // Show hourly temperature chart
+   // Get the current page's pathname
+   const currentPage = window.location.pathname;
+
+   if (currentPage.includes('index.html')) {
+      const airQualityBox = document.getElementById('air-quality-box');
+      if (airQualityBox) {
+         airQualityBox.addEventListener('click', () => {
+            window.location.href = 'data.html?chart=doughnut';
+         });
+      } else {
+         console.error('Unable to find the element with ID "air-quality-box".'); // Error message if the element is not found
+      }
+   }
+
+   if (currentPage.includes('data.html')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const chartType = urlParams.get('chart');
+      if (chartType === 'doughnut') {
+         showDoughnutChart();
+      }
+   }
 });
+
+// Update the background of the dashboard
+function updateBackground(weatherCondition) {
+   const body = document.body;
+   body.className = "";
+
+   switch (weatherCondition.toLowerCase()) {
+      case "clear":
+         body.classList.add("clear"); // Clear
+         break;
+      case "clouds":
+         body.classList.add("cloudy"); // Cloudy
+         break;
+      case "rain":
+         body.classList.add("rainy"); // Rainy
+         break;
+      case "snow":
+         body.classList.add("snowy"); // Snowy
+         break;
+      case "thunderstorm":
+         body.classList.add("thunderstorm"); // Thunderstorm
+         break;
+      case "mist":
+      case "fog":
+         body.classList.add("foggy"); // Foggy
+         break;
+      default:
+         body.classList.add("clear"); // Default: clear weather
+   }
+}
