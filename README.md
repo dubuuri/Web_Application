@@ -1,8 +1,8 @@
 ## Real-time Air Quality Dashboard 🌍💨
 
----
-
 + **Demo:** https://github.com/dubuuri/Web_Application.git
+
+---
 
 #### 📌 About the Project
 
